@@ -9,8 +9,37 @@
   height: 200px;
   color: whitesmoke;
 }
-.temp {
-  position: relative;
-  left: 50%;
-  transform: translateX(-25%);
+.next {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 940px) {
+  .box {
+    border-radius: 0px;
+  }
+  .box:nth-child(even) {
+    border-left: 1px solid rgb(255, 255, 255, 0.3);
+    border-right: 1px solid rgb(255, 255, 255, 0.3);
+  }
+}
+@media (max-width: 500px) {
+  .box {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+  }
+  .next {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+  .box:nth-child(even) {
+    border: none;
+    border-top: 1px solid rgb(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgb(255, 255, 255, 0.3);
+  }
 }

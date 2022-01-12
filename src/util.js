@@ -1,5 +1,3 @@
-import axios from "axios";
-
 const days = [
   "Sunday",
   "Monday",
@@ -21,27 +19,17 @@ const day = [
 
 const getCoords = async () => {
   const pos = await new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(resolve, reject);
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 5000,
+      maximumAge: 0
+    };
+    navigator.geolocation.getCurrentPosition(resolve, reject,options);
   });
-
   return {
-    long: pos.coords.longitude,
-    lat: pos.coords.latitude,
+    long: pos.coords.longitude.toString(),
+    lat: pos.coords.latitude.toString(),
   };
 };
 
-const getCity = async () => {
-  const coordinates = await getCoords();
-  console.log(
-    "🚀 ~ file: util.js ~ line 33 ~ getCity ~ coordinates",
-    coordinates
-  );
-  const { lat, long } = coordinates;
-  const url = `https://us1.locationiq.com/v1/reverse.php?key=${process.env.REACT_APP_LOCATION_KEY}&lat=${lat}&lon=${long}&format=json`;
-  const response = await axios.get(url);
-  const city = response.address.suburb;
-  console.log("🚀 ~ file: util.js ~ line 43 ~ getCity ~ city", city);
-  return city;
-};
-
-export { day, getCity };
+export { day, getCoords ,dayIndex,days};

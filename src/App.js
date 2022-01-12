@@ -2,10 +2,10 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import Box from "./Box";
-import { day, getCity } from "./util";
+import { day, dayIndex, days, getCoords} from "./util";
 
 function App() {
-  // const [currentLocation, setCurrentLocation] = useState()
+  const [currentLocation, setCurrentLocation] = useState("")
   const [data, setData] = useState({
     city: "",
     country: "",
@@ -18,18 +18,14 @@ function App() {
       icon: "",
     },
   });
-  const [forecast, setForecast] = useState([
-    {
-      icon: "",
-      temperature: 0,
-      day: "Monday",
-    },
-  ]);
+  const [forecast, setForecast] = useState([]);
+  const [input,setInput]=useState("")
 
   useEffect(() => {
     async function fetchdata() {
-      const city = await getCity();
-      const _url = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_KEY}&q=${city}&days=3&aqi=no&alerts=no`;
+      const {lat,long} = await getCoords();
+      const search=currentLocation===""?lat+","+long : currentLocation
+      const _url = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_KEY}&q=${search}&days=3&aqi=no&alerts=no`;
       const response = await axios.get(_url);
       const data = response.data;
       const { temp_c, humidity, wind_mph, wind_dir, condition } = data.current;
@@ -47,13 +43,7 @@ function App() {
           icon: condition.icon,
         },
       });
-      setForecast([
-        {
-          icon: "",
-          temperature: 0,
-          day: "Monday",
-        },
-      ]);
+      setForecast([])
       for (let i = 0; i < 3; i++) {
         setForecast((prevState) => [
           ...prevState,
@@ -64,15 +54,28 @@ function App() {
           },
         ]);
       }
-      console.log(forecast);
+      // console.log(forecast);
     }
     fetchdata();
-  }, []);
+  }, [currentLocation]);
 
+  const handleEnter= async (event)=>{
+    if (event.key==="Enter"){
+      const url=`http://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_KEY}&q=${input}`
+      try{
+        const response= await axios.get(url);
+        const name= response.data.location.name;
+        setCurrentLocation(name);
+      }catch(err){
+        console.log(err.response)
+        setCurrentLocation("")
+      }
+    }
+  }
   return (
-    <div>
+    <div className="body">
       <div className="search">
-        <input type="text" className="input" placeholder="Enter city name" />
+        <input type="text" className="input" placeholder="Enter city name" value={input} onChange={e=> setInput(e.target.value)} onKeyPress={handleEnter} />
       </div>
       <div className="container">
         <h2 id="currentTemperature">{data.temperature} °C</h2>
@@ -89,20 +92,17 @@ function App() {
         </div>
       </div>
       <div className="container-2">
-        {forecast.map((data) => {
+        {forecast.map((data,index) => (
           <Box
-            key=""
+            key={index}
             day={data.day}
             icon={data.icon}
             temperature={data.temperature}
-          />;
-        })}
+          />
+        ))}
+        <Box day={days[(dayIndex+3)%7]} icon={"//cdn.weatherapi.com/weather/64x64/day/113.png"} temperature={15}/>
+        <Box day={days[(dayIndex+4)%7]} icon={"//cdn.weatherapi.com/weather/64x64/day/113.png"} temperature={15.2}/>
 
-        {/* <Box day={forecast[0].day} icon={forecast[0].icon} temperature={forecast[0].temperature}/>
-        <Box day={forecast[0].day} icon={forecast[0].icon} temperature={forecast[0].temperature}/>
-        <Box day={forecast[0].day} icon={forecast[0].icon} temperature={forecast[0].temperature}/>
-        <Box day={forecast[0].day} icon={forecast[0].icon} temperature={forecast[0].temperature}/>
-        <Box day={forecast[0].day} icon={forecast[0].icon} temperature={forecast[0].temperature}/>  */}
       </div>
     </div>
   );

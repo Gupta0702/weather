@@ -2,9 +2,7 @@ import React from 'react'
 import "./Box.css"
 
 function Box({icon,day,temperature}) {
-  // const icon="//cdn.weatherapi.com/weather/64x64/night/143.png";
-  // const day="Monday";
-  // const temperature=32;
+
   return (
     <div className="box">
       <img src={icon} alt="" className="icon" />
