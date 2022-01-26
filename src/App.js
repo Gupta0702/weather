@@ -25,7 +25,7 @@ function App() {
     async function fetchdata() {
       const {lat,long} = await getCoords();
       const search=currentLocation===""?lat+","+long : currentLocation
-      const _url = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_KEY}&q=${search}&days=3&aqi=no&alerts=no`;
+      const _url = `https://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_KEY}&q=${search}&days=3&aqi=no&alerts=no`;
       const response = await axios.get(_url);
       const data = response.data;
       const { temp_c, humidity, wind_mph, wind_dir, condition } = data.current;
