@@ -61,7 +61,7 @@ function App() {
 
   const handleEnter= async (event)=>{
     if (event.key==="Enter"){
-      const url=`http://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_KEY}&q=${input}`
+      const url=`https://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_KEY}&q=${input}`
       try{
         const response= await axios.get(url);
         const name= response.data.location.name;
